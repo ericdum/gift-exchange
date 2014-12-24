@@ -1,6 +1,6 @@
 ### 圣诞礼物分配
 
-demo: http://mujiang.info/demo/santa
+demo: http://qqyj.org/demo/santa/
 
 * 访问这个页面就可以抽奖，数据会持久在本地
 * random打乱抽签顺序
