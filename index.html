@@ -1,0 +1,161 @@
+<html>
+  <head>
+    <title>平安夜礼物交换</title>
+    <style>
+      * { margin: 0; padding: 0; font-family: sans-serif }
+      h1, h2 { text-align: center; background: #1D8600; padding: 20px; color: white; }
+      span { padding: 6px }
+      div { text-align: center; }
+      ul li { text-align: center; }
+      #queue { padding: 30px; background: #8FF298; border-bottom: 8px solid red; padding-bottom: 0px; }
+      #queue span { margin: 0 5px; /*background: #1D8600;*/ color: black ; border-bottom: 4px solid #1D8600; line-height: 20px; display: inline-block}
+      h1 { padding-top: 30px; }
+      h2 { padding-bottom: 40px; color: #C4FFD0}
+      input,button,select,textarea{outline:none}
+      body{
+        background: #1D8600;
+      }
+      #console {
+        padding: 20px;
+      }
+      input{
+        border: transparent none; padding: 5px 20px; 
+        background: rgb(9, 79, 1);
+        color: #fff;
+        cursor: pointer;
+      }
+      input:hover {
+        background: rgb(9,60, 3);
+      }
+      li {
+        margin: 5px;
+      }
+      ul {
+        margin-bottom: 50px;
+      }
+      .small {
+        padding: 0;
+        font-size: 12px;
+      }
+    </style>
+    <script src="./jquery-1.9.0.min.js"></script>
+  </head>
+  <body>
+    <div id="queue"></div>
+    <h1>Some</h1>
+    <h2>他的圣诞老人?</h2>
+    <div id="console">
+      <input id="random" type="button" value="Random" />
+      <input id="shoot" type="button" value="Shoot" />
+      <input id="next" type="button" value="Next" />
+    </div>
+    <ul id="result"></ul>
+    <script>
+var damn = ["小贝", "马云", "王思聪", "小马哥", "爹"]
+if( location.hash.match(/clear/) ) {
+  update('pp', damn)
+  update('children', damn)
+  update('happy_children', {})
+  update('santas', damn)
+  location.href = location.href.replace(/#.*/, '');
+}
+
+var pp = initVal('pp', damn)
+var children = initVal('children', damn)
+var happy_children = initVal('happy_children', {})
+var santas = initVal('santas', damn)
+
+renderQueue()
+$('#random').click(function(){ 
+  shuffle(children)
+  renderQueue()
+  update('children', children)
+})
+
+var shooting = false
+$('#shoot').click(function(){
+  if(shooting) return shooting = 1
+  shooting = (new Date()).getTime()
+  getGift()
+  shshshshsh(2000)
+})
+
+$('#next').click(function(){
+  if($('h2').text() == '他的圣诞老人?') return;
+  shooting = false
+  renderQueue()
+})
+
+function shshshshsh(timeout){
+  if(santas.length < 2 || (new Date()).getTime() - shooting > timeout) {
+    return $('h2').text(happy_children[$('h1').text()])
+  }
+  setTimeout(function(){
+    $('h2').text(santas[Math.floor(Math.random()*santas.length)])
+    shshshshsh(timeout)
+  }, 1000/20)
+}
+
+function getGift(){
+  if( ! children.length || ! santas.length ) return alert('all done')
+  child = children.shift()
+  do {
+    var key = Math.floor(Math.random()*santas.length)
+  } while( santas[key] == child )
+  santa = santas.splice(key, 1).pop()
+  happy_children[child] = santa
+  update('happy_children', happy_children)
+  update('children', children)
+  update('santas', santas)
+}
+
+function update(key, val){
+  localStorage.setItem(key, JSON.stringify(val))
+}
+
+function initVal( key, defaultV ) {
+  var val = localStorage.getItem(key)
+  if( ! val ) {
+    localStorage.setItem(key, JSON.stringify(defaultV) ) 
+    val = defaultV
+  } else {
+    val = JSON.parse(val)
+  }
+  return val
+}
+
+function renderQueue(){
+  var queue = $('#queue').empty()
+  for( var i=1; i<children.length; ++i ) {
+    queue.append('<span>'+children[i]+'</span>')
+  }
+  $('h1').text(children[0]?children[0]:'圣诞快乐')
+  $('h2').text(children[0]?'他的圣诞老人?':'Merry Christmas')
+  var result = $('#result').empty()
+  for( var child in happy_children ) {
+    result.append('<li><span>'+child+'</span><span class="small">'+happy_children[child]+'</span></li>')
+  }
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+    </script>
+  </body>
+</html>
